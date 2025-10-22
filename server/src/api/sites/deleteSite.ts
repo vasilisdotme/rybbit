@@ -18,7 +18,7 @@ export async function deleteSite(request: FastifyRequest<{ Params: { id: string 
     },
   });
 
-  siteConfig.removeSite(Number(id));
+  await siteConfig.removeSite(Number(id));
 
   return reply.status(200).send({ success: true });
 }
