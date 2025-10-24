@@ -1,6 +1,7 @@
 import { createWriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
+import { dirname } from "node:path";
 import { pipeline } from "node:stream/promises";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { DateTime } from "luxon";
@@ -129,7 +130,7 @@ export async function importSiteData(request: FastifyRequest<ImportDataRequest>,
         await r2Storage.storeImportFile(storage.location, data.file);
         console.log(`[Import] File streamed to R2: ${storage.location}`);
       } else {
-        const importDir = "/tmp/imports";
+        const importDir = dirname(storage.location);
         await mkdir(importDir, { recursive: true });
         await pipeline(data.file, createWriteStream(storage.location));
         console.log(`[Import] File stored locally: ${storage.location}`);

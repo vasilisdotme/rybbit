@@ -24,9 +24,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Upload, FileText, AlertCircle, CheckCircle2, Clock, Loader2, Database, Trash2 } from "lucide-react";
+import { Upload, FileText, AlertCircle, CheckCircle2, Clock, Loader2, Database, Trash2, Info } from "lucide-react";
 import { useGetSiteImports, useImportSiteData, useDeleteSiteImport } from "@/api/admin/import";
 import { SplitDateRangePicker } from "@/components/SplitDateRangePicker";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { IS_CLOUD } from "@/lib/const";
 
 interface ImportManagerProps {
   siteId: number;
@@ -224,7 +226,12 @@ export function ImportManager({ siteId, disabled }: ImportManagerProps) {
   }, [data?.data]);
 
   const formData = watch();
-  const isImportDisabled = !isValid || mutation.isPending || disabled;
+
+  // Check if there's an active import (cloud only)
+  const hasActiveImport =
+    IS_CLOUD && sortedImports.some(imp => imp.status === "pending" || imp.status === "processing");
+
+  const isImportDisabled = !isValid || mutation.isPending || disabled || hasActiveImport;
 
   return (
     <div className="space-y-6">
@@ -238,6 +245,16 @@ export function ImportManager({ siteId, disabled }: ImportManagerProps) {
           <CardDescription>Import data from other analytics platforms. Supports CSV files up to 100MB.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Active Import Warning */}
+          {hasActiveImport && (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                You have an active import in progress. Please wait for it to complete before starting a new import.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Data Source Selection */}
             <div className="space-y-2">
@@ -249,7 +266,11 @@ export function ImportManager({ siteId, disabled }: ImportManagerProps) {
                 name="source"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange} disabled={disabled || mutation.isPending}>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={disabled || mutation.isPending || hasActiveImport}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select data source" />
                     </SelectTrigger>
@@ -276,7 +297,7 @@ export function ImportManager({ siteId, disabled }: ImportManagerProps) {
                     value={field.value}
                     onChange={field.onChange}
                     label="Date Range (Optional)"
-                    disabled={disabled || mutation.isPending}
+                    disabled={disabled || mutation.isPending || hasActiveImport}
                     showDescription={true}
                     clearButtonText="Clear dates"
                     className="space-y-2"
@@ -299,7 +320,13 @@ export function ImportManager({ siteId, disabled }: ImportManagerProps) {
                 <FileText className="h-4 w-4" />
                 CSV File
               </Label>
-              <Input type="file" accept=".csv" {...register("file")} disabled={disabled || mutation.isPending} />
+              <Input
+                type="file"
+                accept=".csv"
+                multiple={false}
+                {...register("file")}
+                disabled={disabled || mutation.isPending || hasActiveImport}
+              />
               {selectedFile && (
                 <p className="text-sm text-muted-foreground">
                   Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
@@ -423,15 +450,24 @@ export function ImportManager({ siteId, disabled }: ImportManagerProps) {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1">
-                            <Badge className={`${statusInfo.color} flex items-center gap-1 w-fit`}>
+                          <div className="flex items-center gap-2">
+                            <Badge className={`${statusInfo.color} flex items-center gap-1`}>
                               <StatusIcon className={`h-3 w-3 ${imp.status === "processing" ? "animate-spin" : ""}`} />
                               {statusInfo.label}
                             </Badge>
                             {imp.errorMessage && (
-                              <p className="text-xs text-red-600 max-w-[200px] truncate" title={imp.errorMessage}>
-                                {imp.errorMessage}
-                              </p>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button type="button" className="text-red-600 hover:text-red-700">
+                                      <Info className="h-4 w-4" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="right" className="max-w-sm">
+                                    <p className="text-sm">{imp.errorMessage}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             )}
                           </div>
                         </TableCell>

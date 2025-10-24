@@ -231,7 +231,7 @@ export async function registerCsvParseWorker() {
       }
 
       // Ensure stream is destroyed to prevent memory leaks
-      if (stream && typeof stream.destroy === "function") {
+      if (stream) {
         try {
           stream.destroy();
         } catch (streamError) {
@@ -244,7 +244,7 @@ export async function registerCsvParseWorker() {
       if (!deleteResult.success) {
         console.warn(`[Import ${importId}] File cleanup failed, will remain in storage: ${deleteResult.error}`);
         // File will be orphaned but import status is already recorded
-        // Could implement a cleanup job here to retry later
+        // importCleanupService.ts handles orphans
       }
     }
   });

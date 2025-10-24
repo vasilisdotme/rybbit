@@ -21,7 +21,7 @@ export function getImportStorageLocation(importId: string, filename: string): St
     };
   }
   return {
-    location: `/tmp/imports/${importId}.csv`,
+    location: `/tmp/imports/${importId}/${filename}`,
     isR2: false,
   };
 }
