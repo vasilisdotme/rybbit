@@ -71,8 +71,8 @@ export function Organizations() {
     const end = now.toFormat("yyyy-MM-dd");
 
     if (timePeriod === "all") {
-      // For all time, use a date far in the past (e.g., 5 years ago)
-      const start = now.minus({ years: 5 }).toFormat("yyyy-MM-dd");
+      // For all time, start from May 2025
+      const start = "2025-05-01";
       return { startDate: start, endDate: end };
     }
 
