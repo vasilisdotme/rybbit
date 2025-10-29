@@ -3,8 +3,19 @@
     # Enable compression
     encode zstd gzip
 
-    request_body max_size 10MB
+    # Special handling for import endpoint with custom size limit
+    handle /api/import-site-data/* {
+        request_body {
+            max_size {$MAX_IMPORT_SIZE:0}
+        }
+        reverse_proxy backend:3001
+    }
+
+    # All other API endpoints with 10MB limit
     handle /api/* {
+        request_body {
+            max_size 10MB
+        }
         reverse_proxy backend:3001
     }
 
