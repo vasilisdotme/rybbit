@@ -114,7 +114,7 @@ Each metric (lcp, cls, inp, fcp, ttfb) includes the following percentiles:
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/performance/overview/123?start_date=2024-01-01&end_date=2024-01-31" \
@@ -151,6 +151,80 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/performance/overview/123?start_date=2024-01-01&end_date=2024-01-31');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/performance/overview/123?start_date=2024-01-01&end_date=2024-01-31')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+req, _ := http.NewRequest("GET", "https://api.rybbit.io/api/performance/overview/123?start_date=2024-01-01&end_date=2024-01-31", nil)
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let client = reqwest::Client::new();
+let res = client
+    .get("https://api.rybbit.io/api/performance/overview/123?start_date=2024-01-01&end_date=2024-01-31")
+    .header("Authorization", "Bearer your_api_key_here")
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/performance/overview/123?start_date=2024-01-01&end_date=2024-01-31"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .GET()
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var response = await client.GetAsync("https://api.rybbit.io/api/performance/overview/123?start_date=2024-01-01&end_date=2024-01-31");
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>
@@ -258,7 +332,7 @@ Each point includes all percentiles for each metric plus:
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/performance/time-series/123?bucket=day&start_date=2024-01-01&end_date=2024-01-07&time_zone=UTC" \
@@ -297,6 +371,80 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/performance/time-series/123?bucket=day&start_date=2024-01-01&end_date=2024-01-07&time_zone=UTC');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/performance/time-series/123?bucket=day&start_date=2024-01-01&end_date=2024-01-07&time_zone=UTC')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+req, _ := http.NewRequest("GET", "https://api.rybbit.io/api/performance/time-series/123?bucket=day&start_date=2024-01-01&end_date=2024-01-07&time_zone=UTC", nil)
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let client = reqwest::Client::new();
+let res = client
+    .get("https://api.rybbit.io/api/performance/time-series/123?bucket=day&start_date=2024-01-01&end_date=2024-01-07&time_zone=UTC")
+    .header("Authorization", "Bearer your_api_key_here")
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/performance/time-series/123?bucket=day&start_date=2024-01-01&end_date=2024-01-07&time_zone=UTC"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .GET()
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var response = await client.GetAsync("https://api.rybbit.io/api/performance/time-series/123?bucket=day&start_date=2024-01-01&end_date=2024-01-07&time_zone=UTC");
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>
@@ -455,7 +603,7 @@ Each object includes the dimension value plus all percentiles:
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/performance/by-dimension/123?dimension=pathname&sort_by=lcp_p75&sort_order=desc&limit=10" \
@@ -494,6 +642,80 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/performance/by-dimension/123?dimension=pathname&sort_by=lcp_p75&sort_order=desc&limit=10');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/performance/by-dimension/123?dimension=pathname&sort_by=lcp_p75&sort_order=desc&limit=10')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+req, _ := http.NewRequest("GET", "https://api.rybbit.io/api/performance/by-dimension/123?dimension=pathname&sort_by=lcp_p75&sort_order=desc&limit=10", nil)
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let client = reqwest::Client::new();
+let res = client
+    .get("https://api.rybbit.io/api/performance/by-dimension/123?dimension=pathname&sort_by=lcp_p75&sort_order=desc&limit=10")
+    .header("Authorization", "Bearer your_api_key_here")
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/performance/by-dimension/123?dimension=pathname&sort_by=lcp_p75&sort_order=desc&limit=10"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .GET()
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var response = await client.GetAsync("https://api.rybbit.io/api/performance/by-dimension/123?dimension=pathname&sort_by=lcp_p75&sort_order=desc&limit=10");
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>

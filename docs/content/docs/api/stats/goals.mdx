@@ -176,7 +176,7 @@ Accepts all [Common Parameters](/docs/api/stats/reference#common-parameters) plu
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/goals/123?start_date=2024-01-01&end_date=2024-01-31" \
@@ -213,6 +213,136 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+<?php
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/goals/123?start_date=2024-01-01&end_date=2024-01-31');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+?>
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+require 'uri'
+
+uri = URI('https://api.rybbit.io/api/goals/123?start_date=2024-01-01&end_date=2024-01-31')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(req)
+end
+
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+package main
+
+import (
+    "encoding/json"
+    "io"
+    "net/http"
+)
+
+func main() {
+    url := "https://api.rybbit.io/api/goals/123?start_date=2024-01-01&end_date=2024-01-31"
+
+    req, _ := http.NewRequest("GET", url, nil)
+    req.Header.Add("Authorization", "Bearer your_api_key_here")
+
+    client := &http.Client{}
+    resp, _ := client.Do(req)
+    defer resp.Body.Close()
+
+    body, _ := io.ReadAll(resp.Body)
+
+    var data map[string]interface{}
+    json.Unmarshal(body, &data)
+}
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+use reqwest;
+use serde_json::Value;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = reqwest::Client::new();
+
+    let response = client
+        .get("https://api.rybbit.io/api/goals/123?start_date=2024-01-01&end_date=2024-01-31")
+        .header("Authorization", "Bearer your_api_key_here")
+        .send()
+        .await?;
+
+    let data: Value = response.json().await?;
+
+    Ok(())
+}
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("https://api.rybbit.io/api/goals/123?start_date=2024-01-01&end_date=2024-01-31"))
+            .header("Authorization", "Bearer your_api_key_here")
+            .GET()
+            .build();
+
+        HttpResponse<String> response = client.send(request,
+            HttpResponse.BodyHandlers.ofString());
+
+        String data = response.body();
+    }
+}
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        using var client = new HttpClient();
+
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+        var response = await client.GetAsync(
+            "https://api.rybbit.io/api/goals/123?start_date=2024-01-01&end_date=2024-01-31");
+
+        var data = await response.Content.ReadAsStringAsync();
+    }
+}
 ```
   </Tab>
 </Tabs>
@@ -379,7 +509,7 @@ Accepts all [Common Parameters](/docs/api/stats/reference#common-parameters) plu
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/goals/1/sessions/123?page=1&limit=10" \
@@ -416,6 +546,136 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+<?php
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/goals/1/sessions/123?page=1&limit=10');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+?>
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+require 'uri'
+
+uri = URI('https://api.rybbit.io/api/goals/1/sessions/123?page=1&limit=10')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(req)
+end
+
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+package main
+
+import (
+    "encoding/json"
+    "io"
+    "net/http"
+)
+
+func main() {
+    url := "https://api.rybbit.io/api/goals/1/sessions/123?page=1&limit=10"
+
+    req, _ := http.NewRequest("GET", url, nil)
+    req.Header.Add("Authorization", "Bearer your_api_key_here")
+
+    client := &http.Client{}
+    resp, _ := client.Do(req)
+    defer resp.Body.Close()
+
+    body, _ := io.ReadAll(resp.Body)
+
+    var data map[string]interface{}
+    json.Unmarshal(body, &data)
+}
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+use reqwest;
+use serde_json::Value;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = reqwest::Client::new();
+
+    let response = client
+        .get("https://api.rybbit.io/api/goals/1/sessions/123?page=1&limit=10")
+        .header("Authorization", "Bearer your_api_key_here")
+        .send()
+        .await?;
+
+    let data: Value = response.json().await?;
+
+    Ok(())
+}
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("https://api.rybbit.io/api/goals/1/sessions/123?page=1&limit=10"))
+            .header("Authorization", "Bearer your_api_key_here")
+            .GET()
+            .build();
+
+        HttpResponse<String> response = client.send(request,
+            HttpResponse.BodyHandlers.ofString());
+
+        String data = response.body();
+    }
+}
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        using var client = new HttpClient();
+
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+        var response = await client.GetAsync(
+            "https://api.rybbit.io/api/goals/1/sessions/123?page=1&limit=10");
+
+        var data = await response.Content.ReadAsStringAsync();
+    }
+}
 ```
   </Tab>
 </Tabs>
@@ -547,7 +807,7 @@ Creates a new goal for tracking conversions.
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Path Goal"
 curl -X POST "https://api.rybbit.io/api/goals/123" \
@@ -606,6 +866,142 @@ response = requests.post(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$body = [
+    'name' => 'Checkout Complete',
+    'goalType' => 'path',
+    'config' => [
+        'pathPattern' => '/checkout/success'
+    ]
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/goals/123');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here',
+    'Content-Type: application/json'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/goals/123')
+request = Net::HTTP::Post.new(uri)
+request['Authorization'] = 'Bearer your_api_key_here'
+request['Content-Type'] = 'application/json'
+request.body = {
+  name: 'Checkout Complete',
+  goalType: 'path',
+  config: { pathPattern: '/checkout/success' }
+}.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+
+data = JSON.parse(response.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+body := map[string]interface{}{
+    "name": "Checkout Complete",
+    "goalType": "path",
+    "config": map[string]string{
+        "pathPattern": "/checkout/success",
+    },
+}
+jsonBody, _ := json.Marshal(body)
+
+req, _ := http.NewRequest("POST", "https://api.rybbit.io/api/goals/123", bytes.NewBuffer(jsonBody))
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+req.Header.Set("Content-Type", "application/json")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let body = serde_json::json!({
+    "name": "Checkout Complete",
+    "goalType": "path",
+    "config": {
+        "pathPattern": "/checkout/success"
+    }
+});
+
+let client = reqwest::Client::new();
+let res = client
+    .post("https://api.rybbit.io/api/goals/123")
+    .header("Authorization", "Bearer your_api_key_here")
+    .json(&body)
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+String json = """
+{
+  "name": "Checkout Complete",
+  "goalType": "path",
+  "config": {
+    "pathPattern": "/checkout/success"
+  }
+}
+""";
+
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/goals/123"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .header("Content-Type", "application/json")
+    .POST(HttpRequest.BodyPublishers.ofString(json))
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+var body = new
+{
+    name = "Checkout Complete",
+    goalType = "path",
+    config = new { pathPattern = "/checkout/success" }
+};
+
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var content = new StringContent(
+    JsonSerializer.Serialize(body),
+    Encoding.UTF8,
+    "application/json");
+
+var response = await client.PostAsync("https://api.rybbit.io/api/goals/123", content);
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>
@@ -691,7 +1087,7 @@ Updates an existing goal.
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X PUT "https://api.rybbit.io/api/goals/1/123" \
@@ -750,6 +1146,142 @@ response = requests.put(
 data = response.json()
 ```
   </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$body = [
+    'name' => 'Signup Completed (Updated)',
+    'goalType' => 'path',
+    'config' => [
+        'pathPattern' => '/signup/complete/*'
+    ]
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/goals/1/123');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here',
+    'Content-Type: application/json'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/goals/1/123')
+request = Net::HTTP::Put.new(uri)
+request['Authorization'] = 'Bearer your_api_key_here'
+request['Content-Type'] = 'application/json'
+request.body = {
+  name: 'Signup Completed (Updated)',
+  goalType: 'path',
+  config: { pathPattern: '/signup/complete/*' }
+}.to_json
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+
+data = JSON.parse(response.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+body := map[string]interface{}{
+    "name": "Signup Completed (Updated)",
+    "goalType": "path",
+    "config": map[string]string{
+        "pathPattern": "/signup/complete/*",
+    },
+}
+jsonBody, _ := json.Marshal(body)
+
+req, _ := http.NewRequest("PUT", "https://api.rybbit.io/api/goals/1/123", bytes.NewBuffer(jsonBody))
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+req.Header.Set("Content-Type", "application/json")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let body = serde_json::json!({
+    "name": "Signup Completed (Updated)",
+    "goalType": "path",
+    "config": {
+        "pathPattern": "/signup/complete/*"
+    }
+});
+
+let client = reqwest::Client::new();
+let res = client
+    .put("https://api.rybbit.io/api/goals/1/123")
+    .header("Authorization", "Bearer your_api_key_here")
+    .json(&body)
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+String json = """
+{
+  "name": "Signup Completed (Updated)",
+  "goalType": "path",
+  "config": {
+    "pathPattern": "/signup/complete/*"
+  }
+}
+""";
+
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/goals/1/123"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .header("Content-Type", "application/json")
+    .PUT(HttpRequest.BodyPublishers.ofString(json))
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+var body = new
+{
+    name = "Signup Completed (Updated)",
+    goalType = "path",
+    config = new { pathPattern = "/signup/complete/*" }
+};
+
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var content = new StringContent(
+    JsonSerializer.Serialize(body),
+    Encoding.UTF8,
+    "application/json");
+
+var response = await client.PutAsync("https://api.rybbit.io/api/goals/1/123", content);
+var data = await response.Content.ReadAsStringAsync();
+```
+  </Tab>
 </Tabs>
 
 ```json title="Response"
@@ -806,7 +1338,7 @@ Deletes a goal. This action cannot be undone.
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X DELETE "https://api.rybbit.io/api/goals/1/123" \
@@ -840,6 +1372,84 @@ response = requests.delete(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/goals/1/123');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/goals/1/123')
+request = Net::HTTP::Delete.new(uri)
+request['Authorization'] = 'Bearer your_api_key_here'
+
+response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+  http.request(request)
+end
+
+data = JSON.parse(response.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+req, _ := http.NewRequest("DELETE", "https://api.rybbit.io/api/goals/1/123", nil)
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let client = reqwest::Client::new();
+let res = client
+    .delete("https://api.rybbit.io/api/goals/1/123")
+    .header("Authorization", "Bearer your_api_key_here")
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/goals/1/123"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .DELETE()
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var response = await client.DeleteAsync("https://api.rybbit.io/api/goals/1/123");
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>

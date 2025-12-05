@@ -192,7 +192,7 @@ Accepts all [Common Parameters](/docs/api/stats/reference#common-parameters) plu
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/sessions/123?page=1&limit=20&start_date=2024-01-01&end_date=2024-01-31" \
@@ -231,6 +231,80 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/sessions/123?page=1&limit=20&start_date=2024-01-01&end_date=2024-01-31');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/sessions/123?page=1&limit=20&start_date=2024-01-01&end_date=2024-01-31')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+req, _ := http.NewRequest("GET", "https://api.rybbit.io/api/sessions/123?page=1&limit=20&start_date=2024-01-01&end_date=2024-01-31", nil)
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let client = reqwest::Client::new();
+let res = client
+    .get("https://api.rybbit.io/api/sessions/123?page=1&limit=20&start_date=2024-01-01&end_date=2024-01-31")
+    .header("Authorization", "Bearer your_api_key_here")
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/sessions/123?page=1&limit=20&start_date=2024-01-01&end_date=2024-01-31"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .GET()
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var response = await client.GetAsync("https://api.rybbit.io/api/sessions/123?page=1&limit=20&start_date=2024-01-01&end_date=2024-01-31");
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>
@@ -391,7 +465,7 @@ Returns detailed information about a specific session including all events and p
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/sessions/sess_abc123/123?limit=50" \
@@ -425,6 +499,80 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/sessions/sess_abc123/123?limit=50');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/sessions/sess_abc123/123?limit=50')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+req, _ := http.NewRequest("GET", "https://api.rybbit.io/api/sessions/sess_abc123/123?limit=50", nil)
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let client = reqwest::Client::new();
+let res = client
+    .get("https://api.rybbit.io/api/sessions/sess_abc123/123?limit=50")
+    .header("Authorization", "Bearer your_api_key_here")
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/sessions/sess_abc123/123?limit=50"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .GET()
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var response = await client.GetAsync("https://api.rybbit.io/api/sessions/sess_abc123/123?limit=50");
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>
@@ -548,7 +696,7 @@ Accepts all [Common Parameters](/docs/api/stats/reference#common-parameters) (ti
 </div>
 <div className="flex flex-col gap-4">
 
-<Tabs items={['cURL', 'JavaScript', 'Python']}>
+<Tabs items={['cURL', 'JavaScript', 'Python', 'PHP', 'Ruby', 'Go', 'Rust', 'Java', '.NET']}>
   <Tab value="cURL">
 ```bash title="Request"
 curl -X GET "https://api.rybbit.io/api/session-locations/123?start_date=2024-01-01&end_date=2024-01-31" \
@@ -585,6 +733,80 @@ response = requests.get(
 )
 
 data = response.json()
+```
+  </Tab>
+  <Tab value="PHP">
+```php title="Request"
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.rybbit.io/api/session-locations/123?start_date=2024-01-01&end_date=2024-01-31');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer your_api_key_here'
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data = json_decode($response, true);
+```
+  </Tab>
+  <Tab value="Ruby">
+```ruby title="Request"
+require 'net/http'
+require 'json'
+
+uri = URI('https://api.rybbit.io/api/session-locations/123?start_date=2024-01-01&end_date=2024-01-31')
+req = Net::HTTP::Get.new(uri)
+req['Authorization'] = 'Bearer your_api_key_here'
+
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+data = JSON.parse(res.body)
+```
+  </Tab>
+  <Tab value="Go">
+```go title="Request"
+req, _ := http.NewRequest("GET", "https://api.rybbit.io/api/session-locations/123?start_date=2024-01-01&end_date=2024-01-31", nil)
+req.Header.Set("Authorization", "Bearer your_api_key_here")
+
+client := &http.Client{}
+resp, _ := client.Do(req)
+defer resp.Body.Close()
+
+var data map[string]interface{}
+json.NewDecoder(resp.Body).Decode(&data)
+```
+  </Tab>
+  <Tab value="Rust">
+```rust title="Request"
+let client = reqwest::Client::new();
+let res = client
+    .get("https://api.rybbit.io/api/session-locations/123?start_date=2024-01-01&end_date=2024-01-31")
+    .header("Authorization", "Bearer your_api_key_here")
+    .send()
+    .await?;
+
+let data: serde_json::Value = res.json().await?;
+```
+  </Tab>
+  <Tab value="Java">
+```java title="Request"
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.rybbit.io/api/session-locations/123?start_date=2024-01-01&end_date=2024-01-31"))
+    .header("Authorization", "Bearer your_api_key_here")
+    .GET()
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+```
+  </Tab>
+  <Tab value=".NET">
+```csharp title="Request"
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", "Bearer your_api_key_here");
+
+var response = await client.GetAsync("https://api.rybbit.io/api/session-locations/123?start_date=2024-01-01&end_date=2024-01-31");
+var data = await response.Content.ReadAsStringAsync();
 ```
   </Tab>
 </Tabs>
