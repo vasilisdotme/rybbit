@@ -1,4 +1,15 @@
 {
   "title": "Stats",
-  "pages": ["reference", "overview", "sessions", "events", "users", "goals", "funnels", "performance", "errors", "misc"]
+  "pages": [
+    "getting-started",
+    "overview",
+    "sessions",
+    "events",
+    "users",
+    "goals",
+    "funnels",
+    "performance",
+    "errors",
+    "misc"
+  ]
 }
