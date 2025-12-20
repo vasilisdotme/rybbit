@@ -35,30 +35,6 @@ export function getStartAndEndDate(time: Time): { startDate: string | null; endD
   return { startDate: time.day, endDate: time.day };
 }
 
-// Internal version that uses snake_case for getQueryParams
-function getStartAndEndDateSnake(time: Time) {
-  const { startDate, endDate } = getStartAndEndDate(time);
-  return { start_date: startDate, end_date: endDate };
-}
-
-export function getQueryParams(time: Time, additionalParams: Record<string, any> = {}): Record<string, any> {
-  if (time.mode === "past-minutes") {
-    return {
-      time_zone: timeZone,
-      past_minutes_start: time.pastMinutesStart,
-      past_minutes_end: time.pastMinutesEnd,
-      ...additionalParams,
-    };
-  }
-
-  // Regular date-based approach
-  return {
-    ...getStartAndEndDateSnake(time),
-    time_zone: timeZone,
-    ...additionalParams,
-  };
-}
-
 /**
  * Build CommonApiParams from a Time object, handling all time modes including past-minutes.
  * This centralizes the logic for converting Time to API params across all hooks.

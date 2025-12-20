@@ -3,7 +3,8 @@ import { DateTime } from "luxon";
 import { useEffect, useMemo } from "react";
 import { GetSessionsResponse } from "../../../../../../api/analytics/endpoints";
 import { APIResponse } from "../../../../../../api/types";
-import { authedFetch, getQueryParams } from "../../../../../../api/utils";
+import { toQueryParams } from "../../../../../../api/analytics/endpoints/types";
+import { authedFetch, buildApiParams } from "../../../../../../api/utils";
 import { getFilteredFilters, useStore } from "../../../../../../lib/store";
 import { SESSION_PAGE_FILTERS } from "../../../../../../lib/filterGroups";
 import { useTimelineStore } from "../../../timelineStore";
@@ -25,8 +26,7 @@ export function useTimelineSessions() {
 
       for (let page = 1; page <= MAX_PAGES; page++) {
         const requestParams = {
-          ...getQueryParams(time),
-          filters: filteredFilters,
+          ...toQueryParams(buildApiParams(time, { filters: filteredFilters })),
           page,
           limit: PAGE_SIZE,
         };

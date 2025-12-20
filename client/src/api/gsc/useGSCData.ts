@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Time } from "../../components/DateSelector/types";
 import { useStore } from "../../lib/store";
-import { authedFetch, getQueryParams } from "../utils";
+import { toQueryParams } from "../analytics/endpoints/types";
+import { authedFetch, buildApiParams } from "../utils";
 
 export type GSCDimension = "query" | "page" | "country" | "device";
 
@@ -19,7 +20,7 @@ export type GSCData = {
 export function useGSCData(dimension: GSCDimension) {
   const { site, time } = useStore();
 
-  const timeParams = getQueryParams(time);
+  const timeParams = toQueryParams(buildApiParams(time));
 
   return useQuery({
     queryKey: ["gsc-data", dimension, site, timeParams],
@@ -43,7 +44,7 @@ export async function fetchGSCData(
   dimension: GSCDimension,
   time: Time
 ): Promise<GSCData[]> {
-  const timeParams = getQueryParams(time);
+  const timeParams = toQueryParams(buildApiParams(time));
   const response = await authedFetch<{ data: GSCData[] }>(`/gsc/data/${site}`, {
     ...timeParams,
     dimension,
