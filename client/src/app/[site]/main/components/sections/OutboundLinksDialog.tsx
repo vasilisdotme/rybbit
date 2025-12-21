@@ -2,11 +2,12 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { getTimezone } from "@/lib/store";
 import { useDebounce, useIntersectionObserver } from "@uidotdev/usehooks";
 import { DateTime } from "luxon";
 import { ChevronDown, ChevronUp, Loader2, Search, SquareArrowOutUpRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { OutboundLink } from "../../../../../api/analytics/events/useGetOutboundLinks";
+import { OutboundLink } from "../../../../../api/analytics/endpoints";
 import { cn } from "../../../../../lib/utils";
 
 interface OutboundLinksDialogProps {
@@ -180,7 +181,7 @@ export function OutboundLinksDialog({ outboundLinks, expanded, close }: Outbound
                     <td className="px-2 py-2 text-right text-neutral-600 dark:text-neutral-300">
                       {(() => {
                         try {
-                          const dt = DateTime.fromSQL(row.lastClicked, { zone: "utc" }).toLocal();
+                          const dt = DateTime.fromSQL(row.lastClicked, { zone: "utc" }).setZone(getTimezone());
                           return dt.toRelative();
                         } catch {
                           return "-";
@@ -199,7 +200,9 @@ export function OutboundLinksDialog({ outboundLinks, expanded, close }: Outbound
                 </div>
               </div>
             )}
-            {!hasMore && <div className="py-4 text-center text-neutral-500 dark:text-neutral-500 text-xs">All items loaded</div>}
+            {!hasMore && (
+              <div className="py-4 text-center text-neutral-500 dark:text-neutral-500 text-xs">All items loaded</div>
+            )}
           </div>
         </div>
       </DialogContent>

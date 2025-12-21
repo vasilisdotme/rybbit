@@ -29,12 +29,6 @@ export async function getGSCData(req: FastifyRequest<GetGSCDataRequest>, res: Fa
       return res.status(400).send({ error: "Missing dimension parameter" });
     }
 
-    // Check if user has access to this site
-    const hasAccess = await getUserHasAccessToSite(req, siteId);
-    if (!hasAccess) {
-      return res.status(403).send({ error: "Access denied" });
-    }
-
     // Get connection
     const [connection] = await db.select().from(gscConnections).where(eq(gscConnections.siteId, siteId));
 
@@ -68,7 +62,7 @@ export async function getGSCData(req: FastifyRequest<GetGSCDataRequest>, res: Fa
 
     if (!gscResponse.ok) {
       const errorText = await gscResponse.text();
-      logger.error(errorText, "GSC API error");
+      logger.error(`GSC API error: ${errorText}`);
       return res.status(gscResponse.status).send({ error: "Failed to fetch GSC data", details: errorText });
     }
 

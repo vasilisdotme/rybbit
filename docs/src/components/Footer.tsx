@@ -164,7 +164,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <Link href="/docs/api" className="text-neutral-400 hover:text-white transition-colors">
+                <Link href="/docs/api/getting-started" className="text-neutral-400 hover:text-white transition-colors">
                   API Reference
                 </Link>
               </li>
@@ -203,6 +203,11 @@ export function Footer() {
               <li>
                 <Link href="/security" className="text-neutral-400 hover:text-white transition-colors">
                   Security
+                </Link>
+              </li>
+              <li>
+                <Link href="/dpa" className="text-neutral-400 hover:text-white transition-colors">
+                  DPA
                 </Link>
               </li>
               <li>

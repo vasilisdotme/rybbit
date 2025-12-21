@@ -1,7 +1,119 @@
 import { Filter, FilterParameter, TimeBucket } from "@rybbit/shared";
 import { DateTime } from "luxon";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { Time } from "../components/DateSelector/types";
+
+// Get system timezone
+const getSystemTimezone = () =>
+  typeof window !== "undefined"
+    ? Intl.DateTimeFormat().resolvedOptions().timeZone
+    : "UTC";
+
+// Get today's date string in a specific timezone
+export const getTodayInTimezone = (tz?: string): string => {
+  const timezone = tz ?? (typeof window !== "undefined" ? useStore.getState().timezone : "system");
+  const resolvedTz = timezone === "system" ? getSystemTimezone() : timezone;
+  return DateTime.now().setZone(resolvedTz).toISODate() ?? DateTime.now().toISODate()!;
+};
+
+// Get a date relative to today in a specific timezone
+export const getRelativeDateInTimezone = (days: number, tz?: string): string => {
+  const timezone = tz ?? (typeof window !== "undefined" ? useStore.getState().timezone : "system");
+  const resolvedTz = timezone === "system" ? getSystemTimezone() : timezone;
+  return DateTime.now().setZone(resolvedTz).plus({ days }).toISODate() ?? "";
+};
+
+// Recalculate time based on wellKnown value for a new timezone
+const recalculateTimeForTimezone = (time: Time, timezone: string): Time | null => {
+  if (!time.wellKnown) return null;
+
+  const now = DateTime.now().setZone(timezone);
+  const today = now.toISODate() ?? "";
+  const yesterday = now.minus({ days: 1 }).toISODate() ?? "";
+
+  switch (time.wellKnown) {
+    case "today":
+      return { mode: "day", day: today, wellKnown: "today" };
+    case "yesterday":
+      return { mode: "day", day: yesterday, wellKnown: "yesterday" };
+    case "last-3-days":
+      return {
+        mode: "range",
+        startDate: now.minus({ days: 2 }).toISODate() ?? "",
+        endDate: today,
+        wellKnown: "last-3-days",
+      };
+    case "last-7-days":
+      return {
+        mode: "range",
+        startDate: now.minus({ days: 6 }).toISODate() ?? "",
+        endDate: today,
+        wellKnown: "last-7-days",
+      };
+    case "last-14-days":
+      return {
+        mode: "range",
+        startDate: now.minus({ days: 13 }).toISODate() ?? "",
+        endDate: today,
+        wellKnown: "last-14-days",
+      };
+    case "last-30-days":
+      return {
+        mode: "range",
+        startDate: now.minus({ days: 29 }).toISODate() ?? "",
+        endDate: today,
+        wellKnown: "last-30-days",
+      };
+    case "last-60-days":
+      return {
+        mode: "range",
+        startDate: now.minus({ days: 59 }).toISODate() ?? "",
+        endDate: today,
+        wellKnown: "last-60-days",
+      };
+    case "this-week":
+      return {
+        mode: "week",
+        week: now.startOf("week").toISODate() ?? "",
+        wellKnown: "this-week",
+      };
+    case "last-week":
+      return {
+        mode: "week",
+        week: now.minus({ weeks: 1 }).startOf("week").toISODate() ?? "",
+        wellKnown: "last-week",
+      };
+    case "this-month":
+      return {
+        mode: "month",
+        month: now.startOf("month").toISODate() ?? "",
+        wellKnown: "this-month",
+      };
+    case "last-month":
+      return {
+        mode: "month",
+        month: now.minus({ months: 1 }).startOf("month").toISODate() ?? "",
+        wellKnown: "last-month",
+      };
+    case "this-year":
+      return {
+        mode: "year",
+        year: now.startOf("year").toISODate() ?? "",
+        wellKnown: "this-year",
+      };
+    case "all-time":
+      return { mode: "all-time", wellKnown: "all-time" };
+    // past-minutes modes don't need date recalculation (they're relative to "now")
+    case "last-30-minutes":
+    case "last-1-hour":
+    case "last-6-hours":
+    case "last-24-hours":
+      return null;
+    default:
+      return null;
+  }
+};
 
 export type StatType = "pageviews" | "sessions" | "users" | "pages_per_session" | "bounce_rate" | "session_duration";
 
@@ -19,11 +131,15 @@ type Store = {
   setSelectedStat: (stat: StatType) => void;
   filters: Filter[];
   setFilters: (filters: Filter[]) => void;
+  timezone: string;
+  setTimezone: (timezone: string) => void;
 };
 
-export const useStore = create<Store>(set => ({
+export const useStore = create<Store>()(
+  persist(
+    (set, get) => ({
   site: "",
-  setSite: site => {
+  setSite: (site) => {
     // Get current URL search params to check for stored state
     let urlParams: URLSearchParams | null = null;
     if (typeof window !== "undefined") {
@@ -140,12 +256,44 @@ export const useStore = create<Store>(set => ({
     }
   },
   bucket: "hour",
-  setBucket: bucket => set({ bucket }),
+  setBucket: (bucket) => set({ bucket }),
   selectedStat: "users",
-  setSelectedStat: stat => set({ selectedStat: stat }),
+  setSelectedStat: (stat) => set({ selectedStat: stat }),
   filters: [],
-  setFilters: filters => set({ filters }),
-}));
+  setFilters: (filters) => set({ filters }),
+  timezone: "system",
+  setTimezone: (newTimezone) => {
+    const state = get();
+    const resolvedTz = newTimezone === "system" ? getSystemTimezone() : newTimezone;
+    const newTime = recalculateTimeForTimezone(state.time, resolvedTz);
+
+    // If time should be recalculated (has wellKnown), update via setTime
+    if (newTime) {
+      set({ timezone: newTimezone });
+      // Use setTime to properly recalculate previousTime and bucket
+      get().setTime(newTime);
+    } else {
+      set({ timezone: newTimezone });
+    }
+  },
+}),
+    {
+      name: "rybbit-store",
+      partialize: (state) => ({ timezone: state.timezone }),
+    }
+  )
+);
+
+// Helper to get actual timezone value (resolves "system" to actual timezone)
+export const getTimezone = () => {
+  const { timezone } = useStore.getState();
+  return timezone === "system" ? getSystemTimezone() : timezone;
+};
+
+// Helper to convert a DateTime to the user's selected timezone
+export const toUserTimezone = (dt: DateTime): DateTime => {
+  return dt.setZone(getTimezone());
+};
 
 export const resetStore = () => {
   const { setSite, setTime, setBucket, setSelectedStat, setFilters } = useStore.getState();

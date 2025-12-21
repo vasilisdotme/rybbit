@@ -4,9 +4,10 @@ import {
   SessionReplayListItem,
   GetSessionReplayEventsResponse,
 } from "../../types/sessionReplay.js";
-import { processResults, getTimeStatement, getFilterStatement } from "../../api/analytics/utils.js";
+import { processResults, getTimeStatement } from "../../api/analytics/utils/utils.js";
 import { FilterParams } from "@rybbit/shared";
 import { r2Storage } from "../storage/r2StorageService.js";
+import { getFilterStatement } from "../../api/analytics/utils/getFilterStatement.js";
 
 /**
  * Service responsible for querying/retrieving session replay data
@@ -132,7 +133,7 @@ export class SessionReplayQueryService {
     const metadata = metadataResults[0];
 
     if (!metadata) {
-      throw new Error("Session replay not found");
+      throw new Error("Session replay not found for session " + sessionId);
     }
 
     // Get events
@@ -288,7 +289,7 @@ export class SessionReplayQueryService {
         const r2Keys = await processResults<{ event_data_key: string }>(r2KeysResult);
 
         // Delete all R2 batches in parallel
-        await Promise.all(r2Keys.map((row) => r2Storage.deleteBatch(row.event_data_key)));
+        await Promise.all(r2Keys.map(row => r2Storage.deleteBatch(row.event_data_key)));
       } catch (error) {
         console.error(`Failed to delete R2 data for session ${sessionId}:`, error);
         // Continue with ClickHouse deletion even if R2 fails

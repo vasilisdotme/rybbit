@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { clickhouse } from "../../db/clickhouse/clickhouse.js";
-import { enrichWithTraits, getFilterStatement, getTimeStatement, processResults } from "./utils.js";
+import { enrichWithTraits, getTimeStatement, processResults } from "./utils/utils.js";
 import { FilterParams } from "@rybbit/shared";
+import { getFilterStatement } from "./utils/getFilterStatement.js";
 
 export type GetUsersResponse = {
   user_id: string; // Device fingerprint
@@ -39,7 +40,7 @@ export async function getUsers(req: FastifyRequest<GetUsersRequest>, res: Fastif
   const {
     filters,
     page = "1",
-    page_size: pageSize = "20",
+    page_size: pageSize = "100",
     sort_by: sortBy = "last_seen",
     sort_order: sortOrder = "desc",
     identified_only: identifiedOnly = "false",

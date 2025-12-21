@@ -1,18 +1,19 @@
 "use client";
 
 import { UptimeMonitor, useMonitorStats } from "@/api/uptime/monitors";
+import { ChartTooltip } from "@/components/charts/ChartTooltip";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatChartDateTime, hour12, userLocale } from "@/lib/dateTimeUtils";
-import { nivoTheme } from "@/lib/nivo";
+import { getTimezone } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { ResponsiveLine } from "@nivo/line";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
+import { useNivoTheme } from "../../../../lib/nivo";
 import { UptimeBucketSelection } from "./UptimeBucketSelection";
 import { useUptimeStore } from "./uptimeStore";
 import { getHoursFromTimeRange } from "./utils";
-import { ChartTooltip } from "@/components/charts/ChartTooltip";
 
 const MONITOR_COLORS = {
   dns: "hsl(160, 70%, 50%)",
@@ -74,17 +75,20 @@ export function MonitorResponseTimeChart({
     });
   };
 
+  const timezone = getTimezone();
+
   // Process data for the chart
   const processedData =
     statsData?.distribution
       ?.map((item: any) => {
         if (!item.hour) return null;
 
-        const timestamp = DateTime.fromSQL(item.hour, { zone: "utc" }).toLocal();
+        // Parse timestamp as UTC and keep in UTC for chart (useUTC: true)
+        const timestamp = DateTime.fromSQL(item.hour, { zone: "utc" });
         if (!timestamp.isValid) return null;
 
         const dataPoint: any = {
-          time: timestamp.toFormat("yyyy-MM-dd HH:mm:ss"),
+          time: timestamp.toFormat("yyyy-MM-dd HH:mm:ss"), // UTC format for chart
           timestamp: timestamp.toISO(), // Store ISO timestamp for proper timezone handling
           response_time_ms: item.avg_response_time,
           check_count: item.check_count || 0,
@@ -184,7 +188,8 @@ export function MonitorResponseTimeChart({
       : [];
 
   const formatXAxisValue = (value: Date) => {
-    const dt = DateTime.fromJSDate(value).setLocale(userLocale);
+    // Interpret JS Date as UTC, then convert to selected timezone
+    const dt = DateTime.fromJSDate(value, { zone: "utc" }).setZone(timezone).setLocale(userLocale);
 
     // Format based on bucket size
     switch (bucket) {
@@ -208,6 +213,7 @@ export function MonitorResponseTimeChart({
         return dt.toFormat(hour12 ? "MMM d" : "dd MMM");
     }
   };
+  const nivoTheme = useNivoTheme();
 
   return (
     <Card className="overflow-visible">
@@ -266,7 +272,7 @@ export function MonitorResponseTimeChart({
           <div className="h-[400px] w-full relative" style={{ overflow: "visible", zIndex: 10 }}>
             <ResponsiveLine
               data={data}
-              theme={{ ...nivoTheme }}
+              theme={nivoTheme}
               margin={{ top: 10, right: 20, bottom: 25, left: 50 }}
               defs={defs}
               fill={fill}
@@ -274,7 +280,7 @@ export function MonitorResponseTimeChart({
                 type: "time",
                 precision: "second",
                 format: "%Y-%m-%d %H:%M:%S",
-                useUTC: false,
+                useUTC: true,
               }}
               yScale={{
                 type: "linear",
@@ -361,11 +367,11 @@ export function MonitorResponseTimeChart({
                 "legends",
               ]}
               sliceTooltip={({ slice }: any) => {
-                const currentTime = DateTime.fromJSDate(new Date(slice.points[0].data.x));
+                const currentTime = DateTime.fromJSDate(new Date(slice.points[0].data.x), { zone: "utc" }).setZone(timezone);
 
                 // Find the corresponding data point to get failure info
                 const dataPoint = processedData.find(
-                  (p: any) => DateTime.fromISO(p.timestamp).toMillis() === currentTime.toMillis()
+                  (p: any) => DateTime.fromISO(p.timestamp).toMillis() === currentTime.toUTC().toMillis()
                 );
 
                 // For stacked HTTP charts, show cumulative total

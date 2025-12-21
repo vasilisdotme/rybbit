@@ -1,8 +1,9 @@
+import { getTimezone } from "@/lib/store";
 import { ResponsiveTimeRange } from "@nivo/calendar";
 import _ from "lodash";
 import { DateTime } from "luxon";
 import { useTheme } from "next-themes";
-import { UserSessionCountResponse } from "../../../../../api/analytics/useGetUserSessions";
+import { UserSessionCountResponse } from "../../../../../api/analytics/endpoints";
 import { useNivoTheme } from "../../../../../lib/nivo";
 import { ChartTooltip } from "../../../../../components/charts/ChartTooltip";
 
@@ -13,7 +14,7 @@ export const VisitCalendar = ({ sessionCount }: { sessionCount: UserSessionCount
     .map(e => ({
       value: e.sessions,
       day: DateTime.fromSQL(e.date ?? 0, { zone: "utc" })
-        .toLocal()
+        .setZone(getTimezone())
         .toFormat("y-LL-dd"),
     }))
     .reverse();
@@ -34,8 +35,12 @@ export const VisitCalendar = ({ sessionCount }: { sessionCount: UserSessionCount
       from={fromDate}
       to={toDate}
       emptyColor={resolvedTheme === "dark" ? "hsl(var(--neutral-750))" : "hsl(var(--neutral-100))"}
-      colors={["#10452A", "#006D32", "#3E9058", "#3CD456"]}
-      margin={{ top: 20, right: 0, bottom: 0, left: 0 }}
+      colors={
+        resolvedTheme === "dark"
+          ? ["#10452A", "#006D32", "#3E9058", "#3CD456"]
+          : ["#9be9a8", "#40c463", "#30a14e", "#216e39"]
+      }
+      margin={{ top: 20, right: 20, bottom: 0, left: -10 }}
       dayBorderWidth={2}
       daySpacing={3}
       dayBorderColor="rgba(0, 0, 0, 0)"

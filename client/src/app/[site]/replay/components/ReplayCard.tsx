@@ -1,7 +1,8 @@
+import { getTimezone } from "@/lib/store";
 import { Clock, MousePointerClick, Trash2 } from "lucide-react";
 import { DateTime } from "luxon";
 import { useState } from "react";
-import { useDeleteSessionReplay } from "../../../../api/analytics/sessionReplay/useDeleteSessionReplay";
+import { useDeleteSessionReplay } from "../../../../api/analytics/hooks/sessionReplay/useDeleteSessionReplay";
 import { Avatar } from "../../../../components/Avatar";
 import { IdentifiedBadge } from "../../../../components/IdentifiedBadge";
 import {
@@ -25,7 +26,7 @@ import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
 import { Skeleton } from "../../../../components/ui/skeleton";
 import { cn, formatter, getUserDisplayName } from "../../../../lib/utils";
-import { useReplayStore } from "./replayStore";
+import { useReplayStore } from "@/components/replay/replayStore";
 
 interface SessionReplayListItem {
   session_id: string;
@@ -55,7 +56,7 @@ export function ReplayCard({ replay }: { replay: SessionReplayListItem }) {
   const deleteSessionReplay = useDeleteSessionReplay();
   const startTime = DateTime.fromSQL(replay.start_time, {
     zone: "utc",
-  }).toLocal();
+  }).setZone(getTimezone());
   const duration = replay.duration_ms ? Math.ceil(replay.duration_ms / 1000) : null;
 
   const formatDuration = (seconds: number) => {
@@ -82,8 +83,7 @@ export function ReplayCard({ replay }: { replay: SessionReplayListItem }) {
   return (
     <div
       className={cn(
-        "bg-white dark:bg-neutral-900 border-b border-neutral-100 dark:border-neutral-800 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer w-[200px] group relative",
-        // "bg-neutral-900 border border-neutral-800 rounded-lg p-3 hover:bg-neutral-800/50 transition-colors cursor-pointer",
+        "border-b border-neutral-100 dark:border-neutral-800 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/80 transition-colors cursor-pointer w-[200px] group relative",
         sessionId === replay.session_id && "bg-neutral-100 dark:bg-neutral-800/80"
       )}
       onClick={() => {
@@ -92,7 +92,11 @@ export function ReplayCard({ replay }: { replay: SessionReplayListItem }) {
     >
       {/* User info row */}
       <div className="flex items-center gap-1.5 mb-1.5">
-        <Avatar size={16} id={replay.user_id} />
+        <Avatar
+          size={16}
+          id={replay.user_id}
+          lastActiveTime={replay.end_time ? DateTime.fromSQL(replay.end_time, { zone: "utc" }) : undefined}
+        />
         <span className="text-xs text-neutral-700 dark:text-neutral-200 truncate max-w-[100px]">
           {getUserDisplayName(replay)}
         </span>
@@ -178,7 +182,7 @@ export function ReplayCard({ replay }: { replay: SessionReplayListItem }) {
 
 export function ReplayCardSkeleton() {
   return (
-    <div className="bg-white dark:bg-neutral-900 border-b border-neutral-100 dark:border-neutral-800 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/80 transition-colors">
+    <div className="border-b border-neutral-100 dark:border-neutral-800 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/80 transition-colors">
       {/* Time and duration row */}
       <div className="flex items-center gap-2 mb-1">
         <Skeleton className="h-3 w-16" />

@@ -2,14 +2,7 @@
 
 import { Check, Minus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DEFAULT_EVENT_LIMIT,
-  FREE_SITE_LIMIT,
-  STANDARD_SITE_LIMIT,
-  STANDARD_TEAM_LIMIT,
-  PRO_SITE_LIMIT,
-  PRO_TEAM_LIMIT,
-} from "../../../../lib/const";
+import { DEFAULT_EVENT_LIMIT, FREE_SITE_LIMIT, STANDARD_SITE_LIMIT, STANDARD_TEAM_LIMIT } from "../../../../lib/const";
 
 const COMPARISON_FEATURES = [
   {
@@ -26,14 +19,14 @@ const COMPARISON_FEATURES = [
         name: "Number of websites",
         free: `${FREE_SITE_LIMIT}`,
         standard: `Up to ${STANDARD_SITE_LIMIT}`,
-        pro: `Up to ${PRO_SITE_LIMIT}`,
+        pro: "Unlimited",
         enterprise: "Unlimited",
       },
       {
         name: "Team members",
         free: "1",
         standard: `Up to ${STANDARD_TEAM_LIMIT}`,
-        pro: `Up to ${PRO_TEAM_LIMIT}`,
+        pro: "Unlimited",
         enterprise: "Unlimited",
       },
     ],

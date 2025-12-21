@@ -4,8 +4,8 @@ import { SessionsList } from "@/components/Sessions/SessionsList";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { useUserInfo } from "../../../../api/analytics/userGetInfo";
-import { useGetSessions, useGetUserSessionCount } from "../../../../api/analytics/useGetUserSessions";
+import { useUserInfo } from "../../../../api/analytics/hooks/userGetInfo";
+import { useGetSessions, useGetUserSessionCount } from "../../../../api/analytics/hooks/useGetUserSessions";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +34,11 @@ export default function UserPage() {
 
   const { data, isLoading } = useUserInfo(Number(site), userId as string);
   const { data: sessionCount } = useGetUserSessionCount(userId as string);
-  const { data: sessionsData, isLoading: isLoadingSessions } = useGetSessions(userId as string, page, LIMIT + 1);
+  const { data: sessionsData, isLoading: isLoadingSessions } = useGetSessions({
+    userId: userId as string,
+    page: page,
+    limit: LIMIT + 1,
+  });
 
   const allSessions = sessionsData?.data || [];
   const hasNextPage = allSessions.length > LIMIT;

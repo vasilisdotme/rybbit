@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { clickhouse } from "../../db/clickhouse/clickhouse.js";
-import { enrichWithTraits, getFilterStatement, getTimeStatement, processResults } from "./utils.js";
+import { enrichWithTraits, getTimeStatement, processResults } from "./utils/utils.js";
 import { FilterParams } from "@rybbit/shared";
+import { getFilterStatement } from "./utils/getFilterStatement.js";
 
 export type GetSessionsResponse = {
   session_id: string;
@@ -41,6 +42,7 @@ export type GetSessionsResponse = {
   ip: string;
   lat: number;
   lon: number;
+  has_replay: number;
 }[];
 
 export interface GetSessionsRequest {
@@ -56,7 +58,7 @@ export interface GetSessionsRequest {
 }
 
 export async function getSessions(req: FastifyRequest<GetSessionsRequest>, res: FastifyReply) {
-  const { filters, page, user_id: userId, limit, identified_only: identifiedOnly = "false" } = req.query;
+  const { filters, page = 1, user_id: userId, limit = 100, identified_only: identifiedOnly = "false" } = req.query;
   const site = req.params.site;
   const filterIdentified = identifiedOnly === "true";
 
@@ -117,12 +119,21 @@ export async function getSessions(req: FastifyRequest<GetSessionsRequest>, res: 
       GROUP BY
           session_id
       ORDER BY session_end DESC
+  ),
+  ReplaySessions AS (
+      SELECT DISTINCT session_id
+      FROM session_replay_metadata
+      FINAL
+      WHERE site_id = {siteId:Int32}
+        AND event_count >= 2
   )
   SELECT
-      *
-  FROM AggregatedSessions
+      a.*,
+      if(r.session_id != '', 1, 0) AS has_replay
+  FROM AggregatedSessions a
+  LEFT JOIN ReplaySessions r ON a.session_id = r.session_id
   WHERE 1 = 1 ${filterStatement}
-  ${filterIdentified ? "AND identified_user_id != ''" : ""}
+  ${filterIdentified ? "AND a.identified_user_id != ''" : ""}
   LIMIT {limit:Int32} OFFSET {offset:Int32}
   `;
 

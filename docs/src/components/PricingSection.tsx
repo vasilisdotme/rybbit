@@ -4,14 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { getCalApi } from "@calcom/embed-react";
 import { useEffect, useState } from "react";
-import {
-  DEFAULT_EVENT_LIMIT,
-  FREE_SITE_LIMIT,
-  PRO_SITE_LIMIT,
-  PRO_TEAM_LIMIT,
-  STANDARD_SITE_LIMIT,
-  STANDARD_TEAM_LIMIT,
-} from "../lib/const";
+import { DEFAULT_EVENT_LIMIT, FREE_SITE_LIMIT, STANDARD_SITE_LIMIT, STANDARD_TEAM_LIMIT } from "../lib/const";
 import { PricingCard } from "./PricingCard";
 
 // Available event tiers for the slider
@@ -38,8 +31,8 @@ const STANDARD_FEATURES = [
 // Define pro plan features
 const PRO_FEATURES = [
   "Everything in Standard",
-  `Up to ${PRO_SITE_LIMIT} websites`,
-  `Up to ${PRO_TEAM_LIMIT} team members`,
+  "Unlimited websites",
+  "Unlimited team members",
   "Session replays",
   "5 year data retention",
   "Priority support",
@@ -48,8 +41,6 @@ const PRO_FEATURES = [
 // Define enterprise plan features
 const ENTERPRISE_FEATURES = [
   "Everything in Pro",
-  "Unlimited websites",
-  "Unlimited team members",
   "Single Sign-On (SSO)",
   "Infinite data retention",
   "Dedicated isolated instance",

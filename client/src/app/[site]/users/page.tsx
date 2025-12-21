@@ -9,14 +9,16 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { getTimezone } from "@/lib/store";
 import { ArrowDown, ArrowUp, ArrowUpDown, Monitor, Smartphone, Tablet } from "lucide-react";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { useGetUsers, UsersResponse } from "../../../api/analytics/useGetUsers";
+import { UsersResponse } from "../../../api/analytics/endpoints";
+import { useGetUsers } from "../../../api/analytics/hooks/useGetUsers";
 import { Avatar } from "../../../components/Avatar";
-import { extractDomain, getChannelIcon, getDisplayName } from "../../../components/Channel";
+import { ChannelIcon, extractDomain, getDisplayName } from "../../../components/Channel";
 import { DisabledOverlay } from "../../../components/DisabledOverlay";
 import { ErrorState } from "../../../components/ErrorState";
 import { Favicon } from "../../../components/Favicon";
@@ -92,7 +94,7 @@ export default function UsersPage() {
 
   // Format relative time with special handling for times less than 1 minute
   const formatRelativeTime = (dateStr: string) => {
-    const date = DateTime.fromSQL(dateStr, { zone: "utc" }).toLocal();
+    const date = DateTime.fromSQL(dateStr, { zone: "utc" }).setZone(getTimezone());
     const diff = Math.abs(date.diffNow(["minutes"]).minutes);
 
     if (diff < 1) {
@@ -112,10 +114,11 @@ export default function UsersPage() {
         // For links: use identified_user_id for identified users, device ID for anonymous
         const linkId = isIdentified ? identifiedUserId : info.getValue();
         const displayName = getUserDisplayName(info.row.original);
+        const lastSeen = DateTime.fromSQL(info.row.original.last_seen, { zone: "utc" });
 
         return (
           <Link href={`/${site}/user/${linkId}`} className="flex items-center gap-2">
-            <Avatar size={20} id={linkId as string} />
+            <Avatar size={20} id={linkId as string} lastActiveTime={lastSeen} />
             <span className="max-w-32 truncate hover:underline" title={displayName}>
               {displayName}
             </span>
@@ -161,7 +164,7 @@ export default function UsersPage() {
 
         return (
           <div className="flex items-center gap-2">
-            {getChannelIcon(channel)}
+            <ChannelIcon channel={channel} />
             <span>{channel}</span>
           </div>
         );
@@ -217,7 +220,7 @@ export default function UsersPage() {
       cell: info => {
         const date = DateTime.fromSQL(info.getValue(), {
           zone: "utc",
-        }).toLocal();
+        }).setZone(getTimezone());
         const formattedDate = date.toLocaleString(DateTime.DATETIME_SHORT);
         const relativeTime = formatRelativeTime(info.getValue());
 
@@ -240,7 +243,7 @@ export default function UsersPage() {
       cell: info => {
         const date = DateTime.fromSQL(info.getValue(), {
           zone: "utc",
-        }).toLocal();
+        }).setZone(getTimezone());
         const formattedDate = date.toLocaleString(DateTime.DATETIME_SHORT);
         const relativeTime = formatRelativeTime(info.getValue());
 

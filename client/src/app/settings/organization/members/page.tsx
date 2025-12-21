@@ -1,5 +1,6 @@
 "use client";
 import { DateTime } from "luxon";
+import { getTimezone } from "../../../../lib/store";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
 import { authClient } from "../../../../lib/auth";
@@ -14,6 +15,7 @@ import { Input } from "../../../../components/ui/input";
 import { useSetPageTitle } from "../../../../hooks/useSetPageTitle";
 import { IS_CLOUD } from "../../../../lib/const";
 import { CreateUserDialog } from "./components/CreateUserDialog";
+import { DeleteOrganizationDialog } from "./components/DeleteOrganizationDialog";
 import { Invitations } from "./components/Invitations";
 import { InviteMemberDialog } from "./components/InviteMemberDialog";
 import { RemoveMemberDialog } from "./components/RemoveMemberDialog";
@@ -117,7 +119,13 @@ function Organization({
                 </Button>
               </div>
             </div>
-            {/* <DeleteOrganizationDialog organization={org} onSuccess={handleRefresh} /> */}
+            <div className="pt-4 border-t mt-4 space-y-2">
+              <h4 className="text-sm font-medium">Delete Organization</h4>
+              <p className="text-xs text-neutral-500">Permanently delete this organization and all its data</p>
+              <div className="w-[200px]">
+                <DeleteOrganizationDialog organization={org} onSuccess={handleRefresh} />
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -187,7 +195,7 @@ function Organization({
                       <TableCell className="capitalize">{member.role}</TableCell>
                       <TableCell>
                         {DateTime.fromSQL(member.createdAt, { zone: "utc" })
-                          .toLocal()
+                          .setZone(getTimezone())
                           .toLocaleString(DateTime.DATE_SHORT)}
                       </TableCell>
                       {isAdmin && (
