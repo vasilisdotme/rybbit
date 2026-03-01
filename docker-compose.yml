@@ -34,6 +34,8 @@ services:
         target: /etc/clickhouse-server/config.d/logging_rules.xml
       - source: clickhouse_user_logging
         target: /etc/clickhouse-server/config.d/user_logging.xml
+      - source: clickhouse_backup_disk
+        target: /etc/clickhouse-server/config.d/backup_disk.xml
     environment:
       - CLICKHOUSE_DB=${CLICKHOUSE_DB:-analytics}
       - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
@@ -172,4 +174,16 @@ configs:
             <log_processors_profiles>0</log_processors_profiles>
           </default>
         </profiles>
+      </clickhouse>
+  clickhouse_backup_disk:
+    content: |
+      <clickhouse>
+        <storage_configuration>
+          <disks>
+            <backups>
+              <type>local</type>
+              <path>/var/lib/clickhouse/backups/</path>
+            </backups>
+          </disks>
+        </storage_configuration>
       </clickhouse>
