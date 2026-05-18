@@ -10,6 +10,7 @@ export type SiteResponse = {
   createdBy: string;
   organizationId: string | null;
   public: boolean;
+  embedEnabled?: boolean;
   saltUserIds: boolean;
   blockBots: boolean;
   isOwner: boolean;
@@ -105,8 +106,10 @@ export function deleteSite(siteId: number) {
 export function updateSiteConfig(
   siteId: number,
   config: {
+    name?: string;
     domain?: string;
     public?: boolean;
+    embedEnabled?: boolean;
     saltUserIds?: boolean;
     blockBots?: boolean;
     excludedIPs?: string[];
